@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="colorlib.com">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+    <link href="/main.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="s130">
+
+      <form action="#" class="form">
+        <div class="inner-form">
+          <div class="input-field first-wrap">
+            <div class="svg-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+              </svg>
+            </div>
+            <input id="search" type="text" name="title" placeholder="Enter the Title" required/>
+            <div class="title error"></div>
+          </div>
+          <div class="input-field second-wrap">
+            <button class="btn-search" id="button" type="button">SEARCH</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+    <div class="col col-sm-6">
+      <table class="table table-hover" id="results">
+      </table>
+      <!-- <img src="/companiesbg.jpg" id="pic" alt=""> -->
+    </div>
+
+    <script src="js/extention/choices.js"></script>
+  </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
+
+
+<script>
+  const form = document.querySelector('form');
+  const titleError = document.querySelector('.title.error');
+  const API_URL = "http://bccaeaa9fd02.ngrok.io/api/companies"   // to be changed
+  const results = document.getElementById("results")
+  const button = document.getElementById("button")
+  // const pic = document.getElementById("pic")
+  form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      button.disabled = true;
+      // reset errors
+      titleError.textContent = '';
+      results.innerHTML = "";
+      // pic.remove();
+      // get values
+      const title = form.title.value;
+      try {
+          const res = await fetch(API_URL, {
+              method: 'POST',
+              body: JSON.stringify({
+                  'title': title,
+              }),
+              mode: 'cors',
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+          const data = await res.json();
+          console.log(data);
+          if (data.success = "fail") {
+              console.log(data.message)
+              // titleError.textContent = data.errors.;
+          }
+          if (data.success = 'ok') {
+              // const thead = document.createElement('thead');
+              const tr = document.createElement('tr');
+              const th1 = document.createElement('th');
+              const th2 = document.createElement('th');
+              // const th3 = document.createElement('th');
+              const rowNumber = document.createTextNode("Sr. No. ");
+              const companyName = document.createTextNode("Exploit Name")
+              // const companyProbability = document.createTextNode("Probability")
+              th1.appendChild(rowNumber)
+              th2.appendChild(companyName)
+              // th3.appendChild(companyProbability)
+              tr.appendChild(th1)
+              tr.appendChild(th2)
+              // tr.appendChild(th3)
+              results.appendChild(tr)
+              const resultData = data.result_data;
+              let i = 1;
+              resultData.forEach(result => {
+                  const tr = document.createElement('tr');
+                  const th1 = document.createElement('th');
+                  const td1 = document.createElement('td');
+                  // const td2 = document.createElement('td');
+                  const rowNumber = document.createTextNode(i);
+                  const companyName = document.createTextNode(result.title)
+                  // const companyProbability = document.createTextNode(result.probab)
+                  th1.appendChild(rowNumber)
+                  td1.appendChild(companyName)
+                  // td2.appendChild(companyProbability)
+                  tr.appendChild(th1)
+                  tr.appendChild(td1)
+                  // tr.appendChild(td2)
+                  results.appendChild(tr)
+                  i++;
+              });
+          }
+      } catch (err) {
+          console.log(err);
+      }
+      button.disabled = false
+  });
+</script>
