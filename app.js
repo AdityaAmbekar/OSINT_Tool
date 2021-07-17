@@ -3,10 +3,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 
-
 const app = express();
 const port = process.env.PORT || 3000;
-
 
 // view engine
 app.set('view engine', 'ejs');
